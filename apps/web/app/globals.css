@@ -1,0 +1,80 @@
+@import "tailwindcss";
+
+@theme {
+  --color-warm-bg: #FDF8F3;
+  --color-warm-surface: #FFF9F5;
+  --color-warm-surface-hover: #FFF5EE;
+  --color-warm-border: #F0E6DB;
+  --color-primary-main: #E8654A;
+  --color-primary-hover: #D45A40;
+  --color-primary-light: #FDEBE6;
+  --color-primary-foreground: #FFFFFF;
+  --color-text-strong: #2C2620;
+  --color-text-default: #4A4239;
+  --color-text-muted: #8C8279;
+  --color-text-disabled: #B8AFA6;
+  --color-tag-bg: #FFFFFF;
+  --color-tag-border: #E0D8CF;
+  --color-tag-text: #6B6259;
+  --color-success: #16A34A;
+  --color-warning: #D97706;
+  --color-error: #DC2626;
+  --font-base: "Pretendard Variable", Pretendard, -apple-system,
+    BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI",
+    "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", sans-serif;
+}
+
+:root {
+  /* Spacing Scale */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+
+  /* Typography */
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-base: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.5rem;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --line-height-tight: 1.25;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.75;
+
+  /* Border Radius */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-full: 9999px;
+
+  /* Shadow */
+  --shadow-sm: 0 1px 2px rgba(44, 38, 32, 0.04);
+  --shadow-md: 0 2px 8px rgba(44, 38, 32, 0.06);
+  --shadow-lg: 0 4px 16px rgba(44, 38, 32, 0.08);
+
+  /* Transition */
+  --transition-fast: 150ms ease;
+  --transition-normal: 200ms ease;
+  --transition-slow: 300ms ease;
+
+  /* Layout */
+  --max-width-content: 720px;
+  --header-height: 64px;
+}
+
+body {
+  font-family: var(--font-base);
+  background-color: var(--color-warm-bg);
+  color: var(--color-text-default);
+  line-height: var(--line-height-normal);
+}

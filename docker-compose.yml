@@ -1,0 +1,46 @@
+services:
+  db:
+    image: postgres:16-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: todolist
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  server:
+    build:
+      context: .
+      dockerfile: apps/server/Dockerfile
+    ports:
+      - "4000:4000"
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@db:5432/todolist
+      PORT: 4000
+    volumes:
+      - ./apps/server/src:/app/src
+      - ./apps/server/prisma:/app/prisma
+    restart: unless-stopped
+
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      - server
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:4000/api
+    volumes:
+      - ./apps/web:/app
+      - /app/node_modules
+      - /app/.next
+    restart: unless-stopped
+
+volumes:
+  pgdata:

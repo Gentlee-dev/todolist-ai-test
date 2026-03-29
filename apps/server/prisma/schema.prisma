@@ -1,0 +1,75 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  name      String   @default("Default User")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  todos      Todo[]
+  categories Category[]
+
+  @@map("users")
+}
+
+model Todo {
+  id         String    @id @default(uuid())
+  text       String
+  completed  Boolean   @default(false)
+  sortOrder  Int       @map("sort_order")
+  userId     String    @map("user_id")
+  categoryId String?   @map("category_id")
+  createdAt  DateTime  @default(now()) @map("created_at")
+  updatedAt  DateTime  @updatedAt @map("updated_at")
+
+  user     User      @relation(fields: [userId], references: [id])
+  category Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  tags     TodoTag[]
+
+  @@index([userId])
+  @@index([categoryId])
+  @@map("todos")
+}
+
+model Category {
+  id        String   @id @default(uuid())
+  name      String
+  color     String   @default("#6B7280")
+  userId    String   @map("user_id")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  user  User   @relation(fields: [userId], references: [id])
+  todos Todo[]
+
+  @@unique([userId, name])
+  @@map("categories")
+}
+
+model Tag {
+  id        String    @id @default(uuid())
+  name      String    @unique
+  createdAt DateTime  @default(now()) @map("created_at")
+
+  todos TodoTag[]
+
+  @@map("tags")
+}
+
+model TodoTag {
+  todoId String @map("todo_id")
+  tagId  String @map("tag_id")
+
+  todo Todo @relation(fields: [todoId], references: [id], onDelete: Cascade)
+  tag  Tag  @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([todoId, tagId])
+  @@map("todo_tags")
+}
