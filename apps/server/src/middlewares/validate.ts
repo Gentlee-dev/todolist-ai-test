@@ -14,14 +14,11 @@ export function validate(schema: ZodSchema) {
   };
 }
 
-export function validateQuery(schema: ZodSchema) {
-  return (req: Request, _res: Response, next: NextFunction) => {
-    const result = schema.safeParse(req.query);
-    if (!result.success) {
-      const message = result.error.errors.map((e) => e.message).join(", ");
-      throw new AppError(400, "VALIDATION_ERROR", message);
-    }
-    req.query = result.data;
-    next();
-  };
+export function parseQuery<T>(schema: ZodSchema<T>, query: Record<string, unknown>): T {
+  const result = schema.safeParse(query);
+  if (!result.success) {
+    const message = result.error.errors.map((e) => e.message).join(", ");
+    throw new AppError(400, "VALIDATION_ERROR", message);
+  }
+  return result.data;
 }

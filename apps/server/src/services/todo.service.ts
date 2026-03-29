@@ -12,7 +12,8 @@ const todoInclude = {
   tags: { include: { tag: { select: { id: true, name: true } } } },
 } as const;
 
-function formatTodo(todo: Awaited<ReturnType<typeof prisma.todo.findFirst>> & { tags: Array<{ tag: { id: string; name: string } }> }) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function formatTodo(todo: Record<string, unknown> & { tags: Array<{ tag: { id: string; name: string } }> }) {
   return {
     ...todo,
     tags: todo.tags.map((tt) => tt.tag),

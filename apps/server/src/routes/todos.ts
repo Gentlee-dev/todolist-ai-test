@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { validate, validateQuery } from "../middlewares/validate";
+import { validate, parseQuery } from "../middlewares/validate";
 import {
   createTodoSchema,
   updateTodoSchema,
@@ -11,13 +11,9 @@ import * as todoService from "../services/todo.service";
 
 export const todosRouter = Router();
 
-todosRouter.get("/", validateQuery(getTodosQuerySchema), async (req, res, next) => {
+todosRouter.get("/", async (req, res, next) => {
   try {
-    const { status, categoryId, tagIds } = req.query as {
-      status: "all" | "active" | "completed";
-      categoryId?: string;
-      tagIds?: string;
-    };
+    const { status, categoryId, tagIds } = parseQuery(getTodosQuerySchema, req.query);
     const tagIdArray = tagIds ? tagIds.split(",") : undefined;
     const data = await todoService.getTodos(status, categoryId, tagIdArray);
     res.json({ data });
