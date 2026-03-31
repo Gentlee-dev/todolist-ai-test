@@ -16,13 +16,16 @@ import {
 import { useUpdateTodo, useDeleteTodo } from "@/hooks/useTodos";
 import { CATEGORY_COLORS } from "@todolist/shared";
 import type { Todo } from "@todolist/shared";
+import type { SyntheticListenerMap } from "@dnd-kit/core/dist/hooks/utilities";
 
 interface TodoItemProps {
   todo: Todo;
   onEditTags?: (todoId: string) => void;
+  dragListeners?: SyntheticListenerMap;
+  isDragging?: boolean;
 }
 
-export function TodoItem({ todo, onEditTags }: TodoItemProps) {
+export function TodoItem({ todo, onEditTags, dragListeners, isDragging }: TodoItemProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [editText, setEditText] = useState(todo.text);
   const editInputRef = useRef<HTMLInputElement>(null);
@@ -76,11 +79,14 @@ export function TodoItem({ todo, onEditTags }: TodoItemProps) {
 
   return (
     <div
-      className={`group flex items-center gap-3 rounded-lg border border-warm-border bg-warm-surface p-3 shadow-sm transition-all hover:shadow-md ${
+      className={`group flex items-center gap-3 rounded-lg border border-warm-border bg-warm-surface p-3 transition-all hover:shadow-md ${
         todo.completed ? "opacity-50" : ""
-      }`}
+      } ${isDragging ? "shadow-lg" : "shadow-sm"}`}
     >
-      <div className="flex items-center text-text-disabled cursor-grab active:cursor-grabbing">
+      <div
+        className="flex items-center text-text-disabled cursor-grab active:cursor-grabbing touch-none"
+        {...dragListeners}
+      >
         <GripVertical className="h-4 w-4" />
       </div>
 
