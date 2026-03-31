@@ -18,9 +18,9 @@ RUN pnpm install --frozen-lockfile
 
 COPY apps/server ./apps/server/
 
-RUN pnpm --filter @todolist/server exec npx prisma generate
-
 WORKDIR /app/apps/server
+
+RUN npx prisma generate
 
 EXPOSE 4000
 
