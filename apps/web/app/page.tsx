@@ -2,6 +2,9 @@
 
 import { useState } from "react";
 import { TodoPageLayout } from "@/components/templates/TodoPageLayout";
+import { CategoryManager } from "@/components/organisms/CategoryManager";
+import { TagManager } from "@/components/organisms/TagManager";
+import { TagEditModal } from "@/components/organisms/TagEditModal";
 import {
   Sheet,
   SheetContent,
@@ -9,18 +12,31 @@ import {
   SheetTitle,
   SheetDescription,
 } from "@/components/ui/sheet";
-import { useCategories } from "@/hooks/useCategories";
-import { useTags } from "@/hooks/useTags";
+import { useTodos } from "@/hooks/useTodos";
+import type { Todo } from "@todolist/shared";
 
 export default function Home() {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<"categories" | "tags">("categories");
-  const { data: categories = [] } = useCategories();
-  const { data: tags = [] } = useTags();
+  const [editingTodo, setEditingTodo] = useState<Todo | null>(null);
+  const [tagModalOpen, setTagModalOpen] = useState(false);
+
+  const { data: todos = [] } = useTodos();
+
+  const handleEditTags = (todoId: string) => {
+    const todo = todos.find((t) => t.id === todoId);
+    if (todo) {
+      setEditingTodo(todo);
+      setTagModalOpen(true);
+    }
+  };
 
   return (
     <>
-      <TodoPageLayout onOpenSettings={() => setSettingsOpen(true)} />
+      <TodoPageLayout
+        onOpenSettings={() => setSettingsOpen(true)}
+        onEditTags={handleEditTags}
+      />
 
       <Sheet open={settingsOpen} onOpenChange={setSettingsOpen}>
         <SheetContent>
@@ -40,7 +56,7 @@ export default function Home() {
                 }`}
                 onClick={() => setActiveTab("categories")}
               >
-                카테고리 ({categories.length})
+                카테고리
               </button>
               <button
                 type="button"
@@ -51,56 +67,20 @@ export default function Home() {
                 }`}
                 onClick={() => setActiveTab("tags")}
               >
-                태그 ({tags.length})
+                태그
               </button>
             </div>
 
-            {activeTab === "categories" ? (
-              <div className="space-y-2">
-                {categories.length === 0 ? (
-                  <p className="text-sm text-text-muted text-center py-4">
-                    카테고리가 없습니다
-                  </p>
-                ) : (
-                  categories.map((cat) => (
-                    <div
-                      key={cat.id}
-                      className="flex items-center gap-2 p-2 rounded-md border border-warm-border"
-                    >
-                      <span
-                        className="w-3 h-3 rounded-full shrink-0"
-                        style={{ backgroundColor: cat.color }}
-                      />
-                      <span className="text-sm text-text-default flex-1">
-                        {cat.name}
-                      </span>
-                    </div>
-                  ))
-                )}
-              </div>
-            ) : (
-              <div className="space-y-2">
-                {tags.length === 0 ? (
-                  <p className="text-sm text-text-muted text-center py-4">
-                    태그가 없습니다
-                  </p>
-                ) : (
-                  tags.map((tag) => (
-                    <div
-                      key={tag.id}
-                      className="flex items-center gap-2 p-2 rounded-md border border-warm-border"
-                    >
-                      <span className="text-sm text-text-default flex-1">
-                        {tag.name}
-                      </span>
-                    </div>
-                  ))
-                )}
-              </div>
-            )}
+            {activeTab === "categories" ? <CategoryManager /> : <TagManager />}
           </div>
         </SheetContent>
       </Sheet>
+
+      <TagEditModal
+        open={tagModalOpen}
+        onOpenChange={setTagModalOpen}
+        todo={editingTodo}
+      />
     </>
   );
 }
