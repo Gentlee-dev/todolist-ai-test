@@ -12,8 +12,8 @@ services:
 
   server:
     build:
-      context: .
-      dockerfile: apps/server/Dockerfile
+      context: ./apps/server
+      dockerfile: Dockerfile
     ports:
       - "4000:4000"
     depends_on:
@@ -28,8 +28,8 @@ services:
 
   web:
     build:
-      context: .
-      dockerfile: apps/web/Dockerfile
+      context: ./apps/web
+      dockerfile: Dockerfile
     ports:
       - "3000:3000"
     depends_on:
