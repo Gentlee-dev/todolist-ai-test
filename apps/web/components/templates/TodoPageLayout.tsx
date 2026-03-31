@@ -44,7 +44,7 @@ export function TodoPageLayout({ onOpenSettings, onEditTags }: TodoPageLayoutPro
           style={{ maxWidth: "var(--max-width-content)" }}
         >
           <h1 className="text-xl font-bold text-text-strong">Todo</h1>
-          <Button variant="ghost" size="icon" onClick={onOpenSettings}>
+          <Button variant="ghost" size="icon" onClick={onOpenSettings} aria-label="설정">
             <Settings className="h-5 w-5" />
           </Button>
         </div>

@@ -15,12 +15,13 @@ const options: { label: string; value: TodoStatusFilter }[] = [
 
 export function FilterGroup({ value, onChange }: FilterGroupProps) {
   return (
-    <div className="flex items-center gap-1 rounded-lg bg-warm-surface border border-warm-border p-1">
+    <div className="flex items-center gap-1 rounded-lg bg-warm-surface border border-warm-border p-1" role="group" aria-label="상태 필터">
       {options.map((opt) => (
         <button
           key={opt.value}
           type="button"
           onClick={() => onChange(opt.value)}
+          aria-pressed={value === opt.value}
           className={`flex-1 px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
             value === opt.value
               ? "bg-primary-main text-white"

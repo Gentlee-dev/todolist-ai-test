@@ -41,7 +41,7 @@ export function TodoInput() {
   const selectedCategory = categories?.find((c) => c.id === selectedCategoryId);
 
   return (
-    <div className="flex gap-2 items-center">
+    <div className="flex flex-col sm:flex-row gap-2">
       <div className="relative flex-1 flex gap-2">
         <Input
           ref={inputRef}
@@ -49,6 +49,7 @@ export function TodoInput() {
           onChange={(e) => setText(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder="할 일을 입력하세요"
+          aria-label="할 일 입력"
           className="flex-1"
         />
         <div className="relative">
@@ -57,6 +58,7 @@ export function TodoInput() {
             variant="outline"
             size="default"
             onClick={() => setShowCategoryDropdown(!showCategoryDropdown)}
+            aria-label="카테고리 선택"
             className="min-w-[100px] justify-start text-sm"
           >
             {selectedCategory ? (

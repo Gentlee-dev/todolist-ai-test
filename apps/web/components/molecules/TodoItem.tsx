@@ -85,6 +85,9 @@ export function TodoItem({ todo, onEditTags, dragListeners, isDragging }: TodoIt
     >
       <div
         className="flex items-center text-text-disabled cursor-grab active:cursor-grabbing touch-none"
+        aria-label="드래그하여 순서 변경"
+        role="button"
+        tabIndex={0}
         {...dragListeners}
       >
         <GripVertical className="h-4 w-4" />

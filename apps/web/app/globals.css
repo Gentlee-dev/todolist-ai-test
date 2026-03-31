@@ -72,9 +72,23 @@
   --header-height: 64px;
 }
 
+@media (max-width: 480px) {
+  :root {
+    --header-height: 52px;
+  }
+}
+
 body {
   font-family: var(--font-base);
   background-color: var(--color-warm-bg);
   color: var(--color-text-default);
   line-height: var(--line-height-normal);
+  min-width: 360px;
+}
+
+/* Focus visible styles for keyboard accessibility */
+*:focus-visible {
+  outline: 2px solid var(--color-primary-main);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
 }
