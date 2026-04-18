@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   DndContext,
+  DragOverlay,
   closestCenter,
   KeyboardSensor,
   PointerSensor,
@@ -18,7 +19,6 @@ import {
   verticalListSortingStrategy,
   useSortable,
   arrayMove,
-  type AnimateLayoutChanges,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { TodoItem } from "@/components/molecules/TodoItem";
@@ -30,16 +30,12 @@ interface TodoListProps {
   onEditTags?: (todoId: string) => void;
 }
 
-const animateLayoutChanges: AnimateLayoutChanges = () => false;
-
 function SortableTodoItem({
   todo,
   onEditTags,
-  isDragging,
 }: {
   todo: Todo;
   onEditTags?: (todoId: string) => void;
-  isDragging: boolean;
 }) {
   const {
     attributes,
@@ -47,14 +43,13 @@ function SortableTodoItem({
     setNodeRef,
     transform,
     transition,
-  } = useSortable({ id: todo.id, animateLayoutChanges });
+    isDragging,
+  } = useSortable({ id: todo.id });
 
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
-    ...(isDragging
-      ? { scale: "1.02", zIndex: 50, position: "relative" as const }
-      : {}),
+    opacity: isDragging ? 0 : 1,
   };
 
   return (
@@ -70,8 +65,13 @@ function SortableTodoItem({
 }
 
 export function TodoList({ todos, onEditTags }: TodoListProps) {
+  const [items, setItems] = useState(todos);
   const [activeId, setActiveId] = useState<string | null>(null);
   const reorderTodos = useReorderTodos();
+
+  useEffect(() => {
+    setItems(todos);
+  }, [todos]);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -85,7 +85,7 @@ export function TodoList({ todos, onEditTags }: TodoListProps) {
     }),
   );
 
-  if (todos.length === 0) {
+  if (items.length === 0) {
     return (
       <div className="text-center py-12 text-text-muted">
         <p className="text-lg">할 일이 없습니다</p>
@@ -103,12 +103,15 @@ export function TodoList({ todos, onEditTags }: TodoListProps) {
     const { active, over } = event;
 
     if (over && active.id !== over.id) {
-      const oldIndex = todos.findIndex((t) => t.id === active.id);
-      const newIndex = todos.findIndex((t) => t.id === over.id);
-      const reordered = arrayMove(todos, oldIndex, newIndex);
+      const oldIndex = items.findIndex((t) => t.id === active.id);
+      const newIndex = items.findIndex((t) => t.id === over.id);
+      const reordered = arrayMove(items, oldIndex, newIndex);
+      setItems(reordered);
       reorderTodos.mutate(reordered.map((t) => t.id));
     }
   };
+
+  const activeTodo = activeId ? items.find((t) => t.id === activeId) : null;
 
   return (
     <DndContext
@@ -118,20 +121,26 @@ export function TodoList({ todos, onEditTags }: TodoListProps) {
       onDragEnd={handleDragEnd}
     >
       <SortableContext
-        items={todos.map((t) => t.id)}
+        items={items.map((t) => t.id)}
         strategy={verticalListSortingStrategy}
       >
         <div className="flex flex-col gap-2">
-          {todos.map((todo) => (
+          {items.map((todo) => (
             <SortableTodoItem
               key={todo.id}
               todo={todo}
               onEditTags={onEditTags}
-              isDragging={activeId === todo.id}
             />
           ))}
         </div>
       </SortableContext>
+      <DragOverlay>
+        {activeTodo ? (
+          <div style={{ transform: "scale(1.02)" }}>
+            <TodoItem todo={activeTodo} onEditTags={onEditTags} isDragging />
+          </div>
+        ) : null}
+      </DragOverlay>
     </DndContext>
   );
 }
