@@ -18,6 +18,7 @@ import {
   verticalListSortingStrategy,
   useSortable,
   arrayMove,
+  type AnimateLayoutChanges,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { TodoItem } from "@/components/molecules/TodoItem";
@@ -28,6 +29,8 @@ interface TodoListProps {
   todos: Todo[];
   onEditTags?: (todoId: string) => void;
 }
+
+const animateLayoutChanges: AnimateLayoutChanges = () => false;
 
 function SortableTodoItem({
   todo,
@@ -44,7 +47,7 @@ function SortableTodoItem({
     setNodeRef,
     transform,
     transition,
-  } = useSortable({ id: todo.id });
+  } = useSortable({ id: todo.id, animateLayoutChanges });
 
   const style = {
     transform: CSS.Transform.toString(transform),
